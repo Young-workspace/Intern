@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    body { font-size: 14px; }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+
+    // some function will be placed
+
+    // function used to ajax category number and get seller info
+    function ajax_category(){
+        var params = $("#category_form").serialize();
+        start = new Date().getTime();
+        $.ajax({
+             url: 'seller_info.php',
+                method: "POST",
+                data:{params,
+                    menu:"NO_search"},
+                success: function(data){
+                    obj = JSON.parse(data);
+
+                    // print log of data in console
+                    //console.log(data);
+
+                    // remove #d_table except first row
+                    $("#d_table tr:not(:first)").remove();
+
+                    w ="";
+
+                    tmp = obj["data"];
+                    for(i = 0; i < tmp.length; i++){
+                        w += "<tr align=center>";
+
+                        //w += "<td>" + (i+1) + "</td>";
+
+                        // print Category Code
+                        w += "<td>" + tmp[i]["CategoryCode"] + "</td>";
+
+                        // print Category Name
+                        w += "<td>" + tmp[i]["CategoryName"] + "</td>";
+
+                        // print seller id
+                        w += "<td>" + tmp[i]["SellerName"] + "</td>";
+
+                        // print seller Name
+                        w += "<td>" + tmp[i]["Seller"] + "</td>";
+
+                        // print shop name
+                        w += "<td>" + tmp[i]["ShopName"] + "</td>";
+
+                        w += "<td>" + tmp[i]["Classify"] + "</td>";
+
+                        w += "<td>" + tmp[i]["License"] + "</td>";
+
+                        w += "<td>" + tmp[i]["Report"] + "</td>";
+
+                        // print seller call number
+                        w += "<td>" + tmp[i]["SellerPhone"] + "</td>";
+
+                        // print seller mail
+                        w += "<td>" + tmp[i]["SellerMail"] + "</td>";
+
+                        // print seller return address
+                        //w += "<td>" + tmp[i]["RetAddr"] + "</td>";
+
+                        w += "<td>" + tmp[i]["PostAddr"] + "</td>";
+
+                        // print seller company address
+                        w += "<td>" + tmp[i]["SellerAddr"] + "</td>";
+
+                        // execution time for each functino call
+                        //w += "<td>" + tmp[i]["time"]['1. sendCURL_time'] + "</td>";
+                        //w += "<td>" + tmp[i]["time"]['2. str_get_time']+"</td>";
+                        //w += "<td>" + tmp[i]["time"]['3. input_time'] + "</td>";
+
+                        w += "</tr>";
+                    }
+
+                    $("#d_table").append(w);
+
+                    // print execution time
+                    end = new Date().getTime();
+                    t = "<tr align=center>";
+                    t += "<td>" + (end-start)/1000 + "</td>";
+                    t += "<td>" + obj["time"]["category_time"] + "</td>";
+                    t += "<td>" + obj["time"]["seller_time"] + "</td>";
+                    t += "</tr>";
+                    $("#time_table").append(t);
+                }
+            });
+
+    }
+
+    $(document).ready(function(){
+        $("#search_cate").on('click',function(){
+            ajax_category();
+        });
+    });
+
+    </script>
+</head>
+
+<body>
+    <h2><b> CATEGORY </b></h2>
+
+    <form id="category_form" action = "", method="POST">
+    <h4> category api </h4>
+     출력할 개수:
+     <input type=text size=10 name="num_prd" id="num_prd" value='10'>
+     <br><br>
+
+     정렬 방식:
+     <select name="sort_method" id="sort_method">
+        <option value="CP"> 인기도순</option>
+        <option value="A"> 누적판매순</option>
+        <option value="G"> 평가높은순</option>
+        <option value="I"> 후기/리뷰많은순 </option>
+        <option value="L"> 낮은가격순 </option>
+        <option value="H"> 높은가격순 </option>
+        <option value="N"> 최근등록순 </option>
+     </select>
+     <br><br>
+
+     새창에서 목록 열기 <button onclick = "window.open('list')">button</button>
+     <br><br>
+
+     카테고리 NO.
+     <input type=text size=50 name="cate_NO" id="cate_NO" value='1002206'>
+     <input type=text size=8 style='display:none;'>
+     <input type=button value="검색" id = "search_cate">
+    </form>
+
+    <div>
+        1007875,
+        1002276,
+        1007361,
+        1002206,
+        1002234
+    </div>
+    <table width=100% border=1 cellpadding=3 id="d_table">
+        <tr>
+            <!-- <td nowrap bgcolor=lightcyan align=center> No </td> -->
+            <td nowrap bgcolor=lightcyan align=center> Code</td>
+            <td nowrap bgcolor=lightcyan align=center> 카테고리</td>
+            <td nowrap bgcolor=lightcyan align=center> 판매자ID</td>
+            <td nowrap bgcolor=lightcyan align=center> 판매자 </td>
+            <td nowrap bgcolor=lightcyan align=center> 상호명/대표자 </td>
+            <td nowrap bgcolor=lightcyan align=center> 사업자 구분</td>
+            <td nowrap bgcolor=lightcyan align=center> 사업자등록번호 </td>
+            <td nowrap bgcolor=lightcyan align=center> 통신판매업신고 </td>
+            <td nowrap bgcolor=lightcyan align=center> 판매자 번호</td>
+            <td nowrap bgcolor=lightcyan align=center> 판매자 주소</td>
+            <td nowrap bgcolor=lightcyan align=center> 우편번호 </td>
+            <td nowrap bgcolor=lightcyan align=center> 판매자 주소</td>
+
+                                       
+            <!-- excution time for each function call
+            <td nowrap bgcolor=lightcyan align=center> CURL time</td>
+            <td nowrap bgcolor=lightcyan align=center> str_get time</td>
+            <td nowrap bgcolor=lightcyan align=center> input time</td>
+             -->
+        </tr>
+    </table>
+
+    <br><br>
+    <table width = 1500 border=1 cellpadding=3 id="time_table">
+        <tr>
+            <td bgcolor=white align=center> total execution time </td>
+            <td bgcolor=white align=center> category function time(.php) </td>
+            <td bgcolor=white align=center> seller function time(.php) </td>
+        </tr>
+    </table>
+    <div id="body">
+    </div>
+ </body>
+</html>
+
+              

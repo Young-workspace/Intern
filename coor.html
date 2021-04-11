@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        // ajax function for geocoding api
+        function ajax_geocode(){
+            var params = $("#geo_form").serialize();
+            $.ajax({
+                url: 'coor.php',
+                method: "POST",
+                data:{params,
+                    menu: "geocode"},
+                success: function(data){
+                    obj = JSON.parse(data);
+                    for(j = 0; j < obj.lenegh; j++)
+                    {
+                        w = "";
+                        k = obj[j];
+                        for(i = 0; i < k["meta"]["totalCount"]; i++){
+                        w += "<tr>";
+                        w += "<td>" + k["addresses"][i]["roadAddress"] + "</td>";
+                        w += "<td>" + k["addresses"][i]["x"] + "</td>";
+                        w += "<td>" + k["addresses"][i]["y"] + "</td>"
+                        w += "</tr>";
+                    }
+
+                    $("#d_table").append(w);
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function(){
+            // load according to id
+            $("#search_geo").on('click',function(){
+                ajax_geocode();
+            });
+            $("#search_sea").on('click', function(){
+                ajax_search();
+            });
+            $("#search_gc").on('click', function(){
+                ajax_gc();
+            });
+        });
+
+    </script>
+</head>
+
+
+ <body>
+    <h2><b> MAP </b></h2>
+
+    <form id="geo_form" action = "", method="POST">
+    <h4> GEOCODE </h4>
+     주소로  좌표 검색:
+     <input type=button value="검색" id = "search_geo">
+    </form>
+
+    <table width=800 border=1 cellpadding=3 id="d_table">
+        <tr>
+            <td bgcolor=white align=center>주소</td>
+            <td bgcolor=white align=center> x 좌표</td>
+            <td bgcolor=white align=center> y 좌표</td>
+        </tr>
+    </table>
+
+    <div id="body">
+
+    </div>
+ </body>
+</html>
+                
