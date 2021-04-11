@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+
+    // some function will be placed
+    function ajax_category(){
+        var params = $("#category_form").serialize();
+        $.ajax({
+             url: 'category_api.php',
+                method: "POST",
+                data:{params,
+                    menu:"NO_search"},
+                success: function(data){
+                    obj = JSON.parse(data);
+                    //$("#body").html(data);
+                    console.log(obj);
+                    w ="";
+                    for($i = 0; $i < obj["Products"]["Product"].length; $i++){
+                        w += "<tr>";
+                        w += "<td>"
+                            + obj["Products"]["Product"][$i]["ProductCode"]
+                            + "</td>";
+                        w += "<td>"
+                            + obj["Products"]["Product"][$i]["ProductName"]
+                            + "</td>";
+                        w += "<td>"
+                            + obj["Products"]["Product"][$i]["DetailPageUrl"]
+                            + "</td>";
+                        w += "</tr>";
+                    }
+                    $("#d_table").append(w);
+                }
+            });
+    }
+
+    $(document).ready(function(){
+        $("#search_cate").on('click',function(){
+            ajax_category();
+        });
+    });
+
+    </script>
+</head>
+
+<body>
+    <h2><b> CATEGORY </b></h2>
+
+    <form id="category_form" action = "", method="POST">
+    <h4> category api </h4>
+     카테고리 NO.
+     <input type=text size=50 name="cate_NO" id="cate_NO" value='1002206'>
+     <input type=text size=8 style='display:none;'>
+     <input type=button value="검색" id = "search_cate">
+    </form>
+
+    <table width=1800 border=1 cellpadding=3 id="d_table">
+        <tr>
+            <td bgcolor=white align=center>상품코드</td>
+            <td bgcolor=white align=center> 상품명</td>
+            <td bgcolor=white align=center> URL</td>
+        </tr>
+    </table>
+
+
+    <div id="body">
+
+    </div>
+ </body>
+</html>
+                

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        // ajax function for geocoding api
+        function ajax_geocode(){
+            var params = $("#geo_form").serialize();
+            $.ajax({
+                url: 'map.php',
+                method: "POST",
+                data:{params,
+                    menu: "geocode"},
+                success: function(data){
+                    obj = JSON.parse(data);
+                    w = "";
+                    for($i = 0; $i < obj["meta"]["totalCount"]; $i++){
+                        w += "<tr>";
+                        w += "<td>" + obj["addresses"][$i]["roadAddress"] + "</td>";
+                        w += "<td>" + obj["addresses"][$i]["x"] + "</td>";
+                        w += "<td>" + obj["addresses"][$i]["y"] + "</td>"
+                        w += "</tr>";
+                    }
+                    $("#d_table").append(w);
+                }
+            });
+        }
+
+        // ajax function for searching api
+        function ajax_search(){
+            var params = $("#sea_form").serialize();
+            $.ajax({
+                url: 'map.php',
+                method: "POST",
+                data:{params,
+                      menu: "search"},
+                success: function(data){
+                    obj2 = JSON.parse(data);
+                     w = "";
+                    for($i = 0; $i < obj2["meta"]["count"]; $i++){
+                        w += "<tr>";
+                        w += "<td>" + obj2["places"][$i]["jibun_address"] + "</td>";
+                        w += "<td>" + obj2["places"][$i]["name"] + "</td>";
+                        w += "<td>" + obj2["places"][$i]["x"] + "</td>";
+                        w += "<td>" + obj2["places"][$i]["y"] + "</td>"
+                        w += "</tr>";
+                    }
+                    $("#d_table2").append(w);
+                }
+            });
+        }
+
+        // ajax function for reverse geocoding api
+        function ajax_gc(){
+            var params = $("#gc_form").serialize();
+            $.ajax({
+                url: 'map.php',
+                method: "POST",
+                data:{
+                      params,
+                      menu: "gc"},
+                success: function(data){
+                    obj3 = JSON.parse(data);
+                    //$("#body").html(data);
+
+                     w = "";
+                    for($i = 0; $i < obj3["results"].length; $i++){
+                        w += "<tr>"+ "<td>";
+                        for($j = 1; $j <4;$j++){
+                            k = "area"+$j;
+                            w += obj3["results"][$i]["region"][k]
+                                  ["name"]+ " ";
+                        }
+                        w += "<td>" + obj3["results"][$i]["code"]["id"] + "</td>";
+                        w += "<td>" + obj3["results"][$i]["code"]["mappingId"] + "</td>";
+                        w += "</td>" + "</tr>";
+                    }
+                    $("#d_table3").append(w);
+
+                }
+            });
+        }
+        $(document).ready(function(){
+            // load according to id
+            $("#search_geo").on('click',function(){
+                ajax_geocode();
+            });
+            $("#search_sea").on('click', function(){
+                ajax_search();
+            });
+            $("#search_gc").on('click', function(){
+                ajax_gc();
+            });
+        });
+
+    </script>
+</head>
+
+
+ <body>
+    <h2><b> MAP </b></h2>
+
+    <form id="geo_form" action = "", method="POST">
+    <h4> GEOCODE </h4>
+     주소
+     <input type=text size=50 name="addr" id="addr" value="63로 50">
+     <input type=text size=8 style='display:none;'>
+     <input type=button value="검색" id = "search_geo">
+    </form>
+
+    <table width=800 border=1 cellpadding=3 id="d_table">
+        <tr>
+            <td bgcolor=white align=center>주소</td>
+            <td bgcolor=white align=center> x 좌표</td>
+            <td bgcolor=white align=center> y 좌표</td>
+        </tr>
+    </table>
+
+    <form id="sea_form" action="", method = "POST">
+        <br>
+    <h4> SEARCH </h4>
+    장소명: <input type=text size=50 name=location id="location" value = "그린팩
+토리">
+    x 좌표:  <input type=text size=20 name=x_cor id = "x_cor" value="127.1054328 ">
+    y 좌표:  <input type=text size=20 name=y_cor id="y_cor" value="37.3595963">
+     <input type=button value="검색" id = "search_sea">
+    </form>
+
+    <table width=800 border=1 cellpadding=3 id="d_table2">
+        <tr>
+            <td bgcolor=white align=center>주소</td>
+            <td bgcolor=white align=center>이름</td>
+            <td bgcolor=white align=center> x 좌표</td>
+            <td bgcolor=white align=center> y 좌표</td>
+        </tr>
+    </table>
+
+    <form id="gc_form" action="", method = "POST">
+        <br>
+    <h4> REVERSE GEOCODING </h4>
+    x 좌표:  <input type=text size=20 name=x_cor_gc id = "x_cor3" value = "127.1054328">
+    y 좌표:  <input type=text size=20 name=y_cor_gc id="y_cor3" value = "37.3595963">
+     <input type=button value="검색" id = "search_gc">
+    </form>
+
+    <table width=800 border=1 cellpadding=3 id="d_table3">
+        <tr>
+            <td bgcolor=white align=center>주소</td>
+            <td bgcolor=white align=center> id</td>
+            <td bgcolor=white align=center> mapping id</td>
+        </tr>
+    </table>
+
+    <div id="body">
+
+    </div>
+ </body>
+</html>
+                      
